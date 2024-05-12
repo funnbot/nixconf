@@ -18,7 +18,7 @@
           nixos-wsl.nixosModules.wsl
         ]
       }
-    }
+    };
 
   };
 }
