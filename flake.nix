@@ -16,7 +16,7 @@
         modules = [
           ./hosts/goblin_wsl/configuration.nix
           nixos-wsl.nixosModules.wsl
-        ]
+        ];
       };
     };
 
