@@ -6,13 +6,19 @@
     nixos-wsl.url = "github:nix-community/nixos-wsl";
   };
 
-  outputs = { self, nixpkgs, nixos-wsl }: {
-     nixosConfigurations.nixos = nixpkgs.lib.nixosSystem {
-       system = "x86_64-linux";
-       modules = [
-        ./configuration.nix
-        nixos-wsl.nixosModules.wsl
-       ];
-     };
+  outputs = { 
+    self, nixpkgs, nixos-wsl
+  }: {
+    # NixOS configuration entrypoint
+    # Available through 'nixos-rebuild --flake .#your-hostname'
+    nixosConfigurations = {
+      goblin_wsl = nixpkgs.lib.nixosSystem {
+        modules = [
+          ./hosts/goblin_wsl/configuration.nix
+          nixos-wsl.nixosModules.wsl
+        ]
+      }
+    }
+
   };
 }
