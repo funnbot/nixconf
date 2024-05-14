@@ -6,23 +6,22 @@
 # https://github.com/nix-community/NixOS-WSL
 
 { 
-  config, lib, pkgs, ... 
+  inputs,
+  config,
+  lib,
+  pkgs,
+  ... 
 }: {
   imports = [
     ./hardware-configuration.nix
+    ../modules/base.nix
   ];
 
-  nix.settings.experimental-features = [ "nix-command" "flakes" ];
-
   wsl.enable = true;
-  wsl.defaultUser = "nixos";
+  wsl.defaultUser = "db";
   wsl.wslConf.automount.enabled = false;
   wsl.wslConf.interop.enabled = false;
   wsl.wslConf.interop.appendWindowsPath = false;
-  environment.systemPackages = with pkgs; [
-    git
-    sage
-  ];
 
   # This option defines the first version of NixOS you have installed on this particular machine,
   # and is used to maintain compatibility with application data (e.g. databases) created on older NixOS versions.
