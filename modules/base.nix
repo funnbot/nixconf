@@ -18,6 +18,13 @@
     # ./users.nix
   ];
 
+  environment.systemPackages = with pkgs; [
+    git
+    git-lfs
+
+    zip
+  ];
+
   nix = {
     settings = {
       # Enable flakes and new 'nix' command

@@ -14,7 +14,7 @@
 }: {
   imports = [
     ./hardware-configuration.nix
-    ../modules/base.nix
+    ../../modules/base.nix
   ];
 
   wsl.enable = true;
