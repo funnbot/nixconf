@@ -37,6 +37,7 @@
 
   programs.nix-ld = {
     enable = true;
+    package = inputs.nix-ld-rs.packages.x86_64-linux.nix-ld-rs;
   };
 
 

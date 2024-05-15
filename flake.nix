@@ -46,7 +46,7 @@
     # This allows you to specify additional libraries that the executable needs to run.
     nix-ld-rs = {
       url = "github:nix-community/nix-ld-rs";
-      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
 
   };
