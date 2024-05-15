@@ -23,6 +23,7 @@
     git-lfs
 
     zip
+    wget
   ];
 
   nix = {
