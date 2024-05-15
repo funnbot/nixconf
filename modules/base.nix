@@ -26,6 +26,13 @@
     wget
   ];
 
+  environment.shells = with pkgs; [
+    bashInteractive
+    nushellFull
+  ];
+
+  users.defaultUserShell = pkgs.bashInteractive;
+
   nix = {
     settings = {
       # Enable flakes and new 'nix' command
@@ -59,6 +66,8 @@
       # TODO: Be sure to add any other groups you need (such as networkmanager, audio, docker, etc)
       # "wheel" is for sudo
       extraGroups = ["wheel"];
+
+      shell = pkgs.nushell;
     };
   };
 }

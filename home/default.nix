@@ -7,7 +7,9 @@
   config,
   pkgs,
   ...
-}: {
+} @ args: let
+  _ = builtins.trace args "The rest of the args";
+in {
   # You can import other home-manager modules here
   imports = [
     # If you want to use modules your own flake exports (from modules/home-manager):
@@ -18,6 +20,7 @@
 
     # You can also split up your configuration and import pieces of it here:
     # ./nvim.nix
+    ./nushell.nix
   ];
 
   nixpkgs = {
@@ -51,6 +54,7 @@
     sessionPath = [
       "/mnt/c/Users/db/Programs/vscode/bin"
     ];
+    
   };
 
   # Add stuff for your user as you see fit:
@@ -68,18 +72,17 @@
     nixd
     nil
   ];
-  
+
   programs.git = {
     enable = true;
     userName = "funnbot";
     userEmail = "22226942+funnbot@users.noreply.github.com";
-    
   };
 
   programs.gh = {
     enable = true;
   };
-  
+
   programs.bash = {
     enable = true;
     enableCompletion = true;

@@ -18,7 +18,7 @@
     nixpkgs.url = "github:nixos/nixpkgs/nixos-23.11";
     # You can access packages and modules from different nixpkgs revs
     # at the same time. Here's an working example:
-    nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
+    # nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
 
     NixOS-WSL = {
       url = "github:nix-community/NixOS-WSL";
@@ -50,7 +50,7 @@
       # inputs.nixpkgs.follows = "nixpkgs";
     };
   };
-  
+
   # function def
   outputs = {
     self,
@@ -58,16 +58,20 @@
     NixOS-WSL,
     home-manager,
     ...
-  } @ inputs: {
+  } @ inputs: let
+    vars = {
+      username = "db";
+    };
+  in {
     formatter.x86_64-linux = nixpkgs.legacyPackages.x86_64-linux.alejandra;
-        
+
     # NixOS configuration entrypoint
     # Available through 'nixos-rebuild --flake .#your-hostname'
     nixosConfigurations = {
       goblin_wsl = nixpkgs.lib.nixosSystem {
         # allow usage of inputs in modules
         specialArgs = {inherit inputs;};
-        
+
         modules = [
           ./hosts/goblin_wsl
           NixOS-WSL.nixosModules.wsl
@@ -79,7 +83,7 @@
             home-manager.extraSpecialArgs = {inherit inputs;};
             home-manager.users.db = import ./home;
           }
-        ];  
+        ];
       };
     };
   };
