@@ -48,6 +48,9 @@
   home = {
     username = "db";
     homeDirectory = "/home/db";
+    sessionPath = [
+      "/mnt/c/Users/db/Programs/vscode/bin"
+    ];
   };
 
   # Add stuff for your user as you see fit:
