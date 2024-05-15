@@ -35,6 +35,12 @@
     channel.enable = false;
   };
 
+  programs.nix-ld = {
+    enable = true;
+    package = inputs.nix-ld-rs.packages."${pkgs.system}".nix-ld-rs;
+  };
+
+
   # TODO: Set your hostname
   # networking.hostName = "your-hostname";
 
