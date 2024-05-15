@@ -22,7 +22,7 @@
 
     NixOS-WSL = {
       url = "github:nix-community/NixOS-WSL";
-      inputs.nixpkgs.follows = "nixpkgs";
+      # inputs.nixpkgs.follows = "nixpkgs";
     };
 
     home-manager = {
@@ -46,11 +46,11 @@
     # This allows you to specify additional libraries that the executable needs to run.
     nix-ld-rs = {
       url = "github:nix-community/nix-ld-rs";
-      inputs.nixpkgs.follows = "nixpkgs-unstable";
+      # NOTE: follows can break reproducable builds, so not always worth it
+      # inputs.nixpkgs.follows = "nixpkgs";
     };
-
   };
-
+  
   # function def
   outputs = {
     self,
@@ -59,28 +59,28 @@
     home-manager,
     ...
   } @ inputs: {
-
-    formatter = nixpkgs.legacyPackages.x86_64-linux.alejandra;
-
+    formatter.x86_64-linux = nixpkgs.legacyPackages.x86_64-linux.alejandra;
+        
     # NixOS configuration entrypoint
     # Available through 'nixos-rebuild --flake .#your-hostname'
     nixosConfigurations = {
       goblin_wsl = nixpkgs.lib.nixosSystem {
-        specialArgs = { inherit inputs; };
-
+        # allow usage of inputs in modules
+        specialArgs = {inherit inputs;};
+        
         modules = [
           ./hosts/goblin_wsl
           NixOS-WSL.nixosModules.wsl
-          home-manager.nixosModules.home-manager {
+          home-manager.nixosModules.home-manager
+          {
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
             # allow usage of inputs in modules from ./home
-            home-manager.extraSpecialArgs = { inherit inputs; };
+            home-manager.extraSpecialArgs = {inherit inputs;};
             home-manager.users.db = import ./home;
           }
-        ];
+        ];  
       };
     };
-
   };
 }

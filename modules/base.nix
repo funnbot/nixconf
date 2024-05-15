@@ -41,7 +41,6 @@
     package = inputs.nix-ld-rs.packages.x86_64-linux.nix-ld-rs;
   };
 
-
   # TODO: Set your hostname
   # networking.hostName = "your-hostname";
 
@@ -53,9 +52,9 @@
       # Be sure to change it (using passwd) after rebooting!
       initialPassword = "correcthorsebatterystaple";
       isNormalUser = true;
-      
+
       # openssh.authorizedKeys.keys = [
-        # TODO: Add your SSH public key(s) here, if you plan on using SSH to connect
+      # TODO: Add your SSH public key(s) here, if you plan on using SSH to connect
       # ];
       # TODO: Be sure to add any other groups you need (such as networkmanager, audio, docker, etc)
       # "wheel" is for sudo
