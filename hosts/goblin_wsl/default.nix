@@ -19,7 +19,7 @@
 
   wsl.enable = true;
   wsl.defaultUser = "db";
-  wsl.wslConf.automount.enabled = false;
+  wsl.wslConf.automount.enabled = true;
   wsl.wslConf.interop.enabled = false;
   wsl.wslConf.interop.appendWindowsPath = false;
 
