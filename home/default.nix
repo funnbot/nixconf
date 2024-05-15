@@ -54,9 +54,18 @@
   # programs.neovim.enable = true;
   # home.packages = with pkgs; [ steam ];
 
+  home.shellAliases = {
+    quick-rebuild = "sudo nix-collect-garbage && sudo nixos-rebuild switch --flake ~/nixconf/.#goblin_wsl";
+  };
+
   # Enable home-manager and git
   programs.home-manager.enable = true;
   programs.git.enable = true;
+
+  programs.bash = {
+    enable = true;
+    enableCompletion = true;
+  }
 
   # Nicely reload system units when changing configs
   systemd.user.startServices = "sd-switch";
