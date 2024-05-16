@@ -2,6 +2,7 @@
   programs = {
     nushell = {
       enable = true;
+
       # The config.nu can be anywhere you want if you like to edit your Nushell with Nu
       configFile.source = ./config.nu;
       # for editing directly to config.nu
@@ -27,7 +28,7 @@
         }
         $env.PATH = ($env.PATH |
         split row (char esep) |
-        prepend /home/myuser/.apps |
+        prepend /home/db/.apps |
         append /usr/bin/env
         )
       '';
@@ -39,7 +40,7 @@
     };
     carapace.enable = true;
     carapace.enableNushellIntegration = true;
-
+    helix.enable = true;
     starship = {
       enable = true;
       settings = {

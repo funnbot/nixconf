@@ -54,15 +54,10 @@ in {
     sessionPath = [
       "/mnt/c/Users/db/Programs/vscode/bin"
     ];
-    
   };
 
-  # Add stuff for your user as you see fit:
-  # programs.neovim.enable = true;
-  # home.packages = with pkgs; [ steam ];
-
   home.shellAliases = {
-    quick-rebuild = "sudo nix-collect-garbage && sudo nixos-rebuild switch --flake ~/nixconf/.#goblin_wsl";
+    quick-rebuild = "sudo rm ~/nixconf/flake.lock && sudo nix-collect-garbage && sudo nixos-rebuild switch --flake ~/nixconf/.#goblin_wsl";
   };
 
   # Enable home-manager and git
@@ -71,6 +66,8 @@ in {
   home.packages = with pkgs; [
     nixd
     nil
+    sage
+    nix-output-monitor
   ];
 
   programs.git = {
