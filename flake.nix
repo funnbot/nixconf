@@ -65,7 +65,7 @@
     };
   in {
     # Your custom packages and modifications, exported as overlays
-    overlays = import ./nix/overlays {inherit inputs;};
+    overlays = import ./overlays {inherit inputs;};
 
     formatter.x86_64-linux = nixpkgs.legacyPackages.x86_64-linux.alejandra;
 
