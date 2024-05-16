@@ -64,15 +64,12 @@ in {
   # Enable home-manager and git
   programs.home-manager.enable = true;
 
-  home.packages = with pkgs;
-    [
-      nixd
-      nil
-      nix-output-monitor
-    ]
-    ++ (with inputs.nixpkgs-unstable; [
-      sage
-    ]);
+  home.packages = with pkgs; [
+    nixd
+    nil
+    nix-output-monitor
+    unstable.sage
+  ];
 
   programs.git = {
     enable = true;
