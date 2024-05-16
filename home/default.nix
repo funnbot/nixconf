@@ -2,7 +2,7 @@
 # Use this to configure your home environment (it replaces ~/.config/nixpkgs/home.nix)
 {
   inputs,
-  # outputs,
+  outputs,
   lib,
   config,
   pkgs,
@@ -25,22 +25,23 @@ in {
 
   nixpkgs = {
     # You can add overlays here
-    # overlays = [
-    # Add overlays your own flake exports (from overlays and pkgs dir):
-    # outputs.overlays.additions
-    # outputs.overlays.modifications
-    # outputs.overlays.unstable-packages
+    overlays = [
+      # Add overlays your own flake exports (from overlays and pkgs dir):
+      # outputs.overlays.additions
+      # outputs.overlays.modifications
+      # outputs.overlays.unstable-packages
+      outputs.overlays.unstable-packages
 
-    # You can also add overlays exported from other flakes:
-    # neovim-nightly-overlay.overlays.default
+      # You can also add overlays exported from other flakes:
+      # neovim-nightly-overlay.overlays.default
 
-    # Or define it inline, for example:
-    # (final: prev: {
-    #   hi = final.hello.overrideAttrs (oldAttrs: {
-    #     patches = [ ./change-hello-to-hi.patch ];
-    #   });
-    # })
-    # ];
+      # Or define it inline, for example:
+      # (final: prev: {
+      #   hi = final.hello.overrideAttrs (oldAttrs: {
+      #     patches = [ ./change-hello-to-hi.patch ];
+      #   });
+      # })
+    ];
     # Configure your nixpkgs instance
     config = {
       # Disable if you don't want unfree packages
@@ -57,18 +58,21 @@ in {
   };
 
   home.shellAliases = {
-    quick-rebuild = "sudo rm ~/nixconf/flake.lock && sudo nix-collect-garbage && sudo nixos-rebuild switch --flake ~/nixconf/.#goblin_wsl";
+    quick-rebuild = "sudo rm ~/nixconf/flake.lock && sudo nixos-rebuild switch --flake ~/nixconf/.#goblin_wsl";
   };
 
   # Enable home-manager and git
   programs.home-manager.enable = true;
 
-  home.packages = with pkgs; [
-    nixd
-    nil
-    sage
-    nix-output-monitor
-  ];
+  home.packages = with pkgs;
+    [
+      nixd
+      nil
+      nix-output-monitor
+    ]
+    ++ (with inputs.nixpkgs-unstable; [
+      sage
+    ]);
 
   programs.git = {
     enable = true;

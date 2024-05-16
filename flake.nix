@@ -18,7 +18,7 @@
     nixpkgs.url = "github:nixos/nixpkgs/nixos-23.11";
     # You can access packages and modules from different nixpkgs revs
     # at the same time. Here's an working example:
-    # nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
+    nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
 
     NixOS-WSL = {
       url = "github:nix-community/NixOS-WSL";
@@ -59,10 +59,14 @@
     home-manager,
     ...
   } @ inputs: let
+    inherit (self) outputs;
     vars = {
       username = "db";
     };
   in {
+    # Your custom packages and modifications, exported as overlays
+    overlays = import ./nix/overlays {inherit inputs;};
+
     formatter.x86_64-linux = nixpkgs.legacyPackages.x86_64-linux.alejandra;
 
     # NixOS configuration entrypoint
@@ -70,7 +74,7 @@
     nixosConfigurations = {
       goblin_wsl = nixpkgs.lib.nixosSystem {
         # allow usage of inputs in modules
-        specialArgs = {inherit inputs;};
+        specialArgs = {inherit inputs outputs;};
 
         modules = [
           ./hosts/goblin_wsl
@@ -80,7 +84,7 @@
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
             # allow usage of inputs in modules from ./home
-            home-manager.extraSpecialArgs = {inherit inputs;};
+            home-manager.extraSpecialArgs = {inherit inputs outputs;};
             home-manager.users.db = import ./home;
           }
         ];

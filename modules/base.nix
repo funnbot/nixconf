@@ -24,6 +24,9 @@
 
     zip
     wget
+
+    bashInteractive
+    nushellFull
   ];
 
   environment.shells = with pkgs; [
@@ -67,7 +70,7 @@
       # "wheel" is for sudo
       extraGroups = ["wheel"];
 
-      shell = pkgs.nushell;
+      shell = pkgs.nushellFull;
     };
   };
 }
