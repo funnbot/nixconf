@@ -33,6 +33,7 @@
   environment.systemPackages = with pkgs; [
     git
     git-lfs
+    git-filter-repo
 
     zip
     wget
