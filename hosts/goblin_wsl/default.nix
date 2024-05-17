@@ -8,8 +8,11 @@
   config,
   lib,
   pkgs,
+  usercfg,
   ...
-}: {
+}: let
+  usercfg.hostname = lib.mkForce "GOBLIN_WSL";
+in {
   imports = [
     ./hardware-configuration.nix
     ../../modules/base.nix

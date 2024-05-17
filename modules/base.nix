@@ -1,5 +1,6 @@
 {
   inputs,
+  overlays,
   lib,
   config,
   pkgs,
@@ -17,6 +18,15 @@
     # You can also split up your configuration and import pieces of it here:
     # ./users.nix
   ];
+
+  nixpkgs = {
+    overlays = [
+      overlays.unstable-packages
+    ];
+    config = {
+      allow-unfree = true;
+    };
+  };
 
   environment.systemPackages = with pkgs; [
     git

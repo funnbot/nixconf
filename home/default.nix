@@ -2,14 +2,13 @@
 # Use this to configure your home environment (it replaces ~/.config/nixpkgs/home.nix)
 {
   inputs,
-  outputs,
+  overlays,
   lib,
   config,
+  usercfg,
   pkgs,
   ...
-} @ args: let
-  _ = builtins.trace args "The rest of the args";
-in {
+}: {
   # You can import other home-manager modules here
   imports = [
     # If you want to use modules your own flake exports (from modules/home-manager):
@@ -22,33 +21,7 @@ in {
     # ./nvim.nix
     ./nushell.nix
   ];
-
-  nixpkgs = {
-    # You can add overlays here
-    overlays = [
-      # Add overlays your own flake exports (from overlays and pkgs dir):
-      # outputs.overlays.additions
-      # outputs.overlays.modifications
-      # outputs.overlays.unstable-packages
-      outputs.overlays.unstable-packages
-
-      # You can also add overlays exported from other flakes:
-      # neovim-nightly-overlay.overlays.default
-
-      # Or define it inline, for example:
-      # (final: prev: {
-      #   hi = final.hello.overrideAttrs (oldAttrs: {
-      #     patches = [ ./change-hello-to-hi.patch ];
-      #   });
-      # })
-    ];
-    # Configure your nixpkgs instance
-    config = {
-      # Disable if you don't want unfree packages
-      allowUnfree = true;
-    };
-  };
-
+  _ = builtins.trace usercfg "asd";
   home = {
     username = "db";
     homeDirectory = "/home/db";
@@ -57,8 +30,8 @@ in {
     ];
   };
 
-  home.shellAliases = {
-    quick-rebuild = "sudo rm ~/nixconf/flake.lock && sudo nixos-rebuild switch --flake ~/nixconf/.#goblin_wsl";
+  programs.nushell.shellAliases = {
+    quick-rebuild = "sudo rm ~/nixconf/flake.lock and sudo nixos-rebuild switch --flake ~/nixconf/.#goblin_wsl";
   };
 
   # Enable home-manager and git

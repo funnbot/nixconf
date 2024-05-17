@@ -55,26 +55,26 @@
   outputs = {
     self,
     nixpkgs,
+    nixpkgs-unstable,
     NixOS-WSL,
     home-manager,
-    ...
+    nix-ld-rs,
   } @ inputs: let
-    inherit (self) outputs;
-    vars = {
-      username = "db";
-    };
-  in {
+    usercfg = import ./usercfg.nix {inherit (nixpkgs) lib;};
     # Your custom packages and modifications, exported as overlays
     overlays = import ./overlays {inherit inputs;};
 
-    formatter.x86_64-linux = nixpkgs.legacyPackages.x86_64-linux.alejandra;
+    systemNames = ["x86_64-linux"];
+    forAllSystems = func: (nixpkgs.lib.genAttrs systemNames func);
+  in {
+    formatter = forAllSystems (system: nixpkgs.legacyPackages.${system}.alejandra);
 
     # NixOS configuration entrypoint
     # Available through 'nixos-rebuild --flake .#your-hostname'
     nixosConfigurations = {
       goblin_wsl = nixpkgs.lib.nixosSystem {
         # allow usage of inputs in modules
-        specialArgs = {inherit inputs outputs;};
+        specialArgs = {inherit inputs overlays usercfg;};
 
         modules = [
           ./hosts/goblin_wsl
@@ -84,7 +84,7 @@
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
             # allow usage of inputs in modules from ./home
-            home-manager.extraSpecialArgs = {inherit inputs outputs;};
+            home-manager.extraSpecialArgs = {inherit inputs usercfg;};
             home-manager.users.db = import ./home;
           }
         ];
