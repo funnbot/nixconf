@@ -36,7 +36,7 @@
         vi = "hx";
         vim = "hx";
         nano = "hx";
-        quick-rebuild = "sudo nixos-rebuild switch --flake ~/nixconf/.#${hostcfg.hostname} ";
+        quick-rebuild = "sudo nixos-rebuild switch --flake ~/nixconf/.#${hostcfg.hostname}";
       };
     };
     carapace.enable = true;

@@ -9,9 +9,9 @@
   ...
 }: {
   imports = [./hardware-configuration.nix] ++ hostcfg.modules;
-  #usercfg.hostname = lib.mkForce "GOBLIN_WSL";
   wsl.enable = true;
   wsl.defaultUser = usercfg.username;
+  wsl.wslConf.network.hostname = hostcfg.hostname;
   wsl.wslConf.automount.enabled = true;
   wsl.wslConf.interop.enabled = false;
   wsl.wslConf.interop.appendWindowsPath = false;

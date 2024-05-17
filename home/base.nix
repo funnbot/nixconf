@@ -15,13 +15,16 @@
   home = {
     username = usercfg.username;
     homeDirectory = "/home/${usercfg.username}";
-    sessionPath = ["/mnt/c/Users/db/Programs/vscode/bin"];
+    # sessionPath = ["/mnt/c/Users/db/Programs/vscode/bin"];
   };
 
   # Enable home-manager and git
   programs.home-manager.enable = true;
 
-  home.packages = with pkgs; [nix-output-monitor unstable.sage];
+  home.packages = with pkgs; [
+    nix-output-monitor
+    unstable.sage
+  ];
 
   programs.git = {
     enable = true;
@@ -35,6 +38,8 @@
     enable = true;
     enableCompletion = true;
   };
+
+  # systemd.user.services.vscode-server.wantedBy = ["default.target"];
 
   # Nicely reload system units when changing configs
   systemd.user.startServices = "sd-switch";

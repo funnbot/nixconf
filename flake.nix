@@ -74,7 +74,7 @@
     # NixOS configuration entrypoint
     # Available through 'nixos-rebuild --flake .#your-hostname'
     nixosConfigurations = let
-      hostname = "goblin_wsl";
+      hostname = "goblin-wsl";
     in {
       ${hostname} = nixpkgs.lib.nixosSystem {
         # allow usage of inputs in modules

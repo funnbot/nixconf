@@ -5,7 +5,6 @@
   "github.copilot.editor.enableAutoCompletions": true,
   "nix.formatterPath": [
     "alejandra",
-    "--"
   ],
   "nix.serverSettings": {
     "nil": {
@@ -22,15 +21,14 @@
       "formatting": {
         "command": [
           "alejandra",
-          "--"
         ]
       },
-      "nixpkgs": {
-        "expr": "import (builtins.getFlake \"/home/db/nixconf\").inputs.nixpkgs { }    "
-      },
+      // "nixpkgs": {
+      //   "expr": "import (builtins.getFlake \"/home/db/nixconf\").inputs.nixpkgs { }    "
+      // },
       "options": {
         "nixos": {
-          "expr": "(builtins.getFlake \"/home/db/nixconf\").nixosConfigurations.goblin_wsl.options"
+          "expr": "(builtins.getFlake \"/home/db/nixconf\").nixosConfigurations.goblin-wsl.options"
         }
       }
     }

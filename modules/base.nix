@@ -10,6 +10,7 @@
 }: {
   # You can import other NixOS modules here
   imports = [
+    inputs.vscode-server.nixosModules.default
     # If you want to use modules your own flake exports (from modules/nixos):
     # outputs.nixosModules.example
 
@@ -20,6 +21,8 @@
     # You can also split up your configuration and import pieces of it here:
     # ./users.nix
   ];
+
+  services.vscode-server.enable = true;
 
   nixpkgs = {
     overlays = [overlays.unstable-packages];
@@ -46,14 +49,24 @@
 
   users.defaultUserShell = pkgs.bashInteractive;
 
-  nix = {
+  nix = let
+    flakeInputs = lib.filterAttrs (_: lib.isType "flake") inputs;
+  in {
     settings = {
       # Enable flakes and new 'nix' command
       experimental-features = "nix-command flakes";
       trusted-users = ["@wheel"];
+      # Opinionated: disable global registry
+      flake-registry = "";
+      # Workaround for https://github.com/NixOS/nix/issues/9574
+      nix-path = config.nix.nixPath;
     };
     # Opinionated: disable channels
     channel.enable = false;
+
+    # Opinionated: make flake registry and nix path match flake inputs
+    registry = lib.mapAttrs (_: flake: {inherit flake;}) flakeInputs;
+    nixPath = lib.mapAttrsToList (n: _: "${n}=flake:${n}") flakeInputs;
   };
 
   programs.nix-ld = {
@@ -62,7 +75,7 @@
   };
 
   # TODO: Set your hostname
-  # networking.hostName = "your-hostname";
+  networking.hostName = hostcfg.hostname;
 
   # TODO: Configure your system-wide user settings (groups, etc), add more users as needed.
   users.users = {
