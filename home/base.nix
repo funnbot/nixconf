@@ -20,10 +20,6 @@
     ];
   };
 
-  programs.nushell.shellAliases = {
-    quick-rebuild = "sudo rm ~/nixconf/flake.lock and sudo nixos-rebuild switch --flake ~/nixconf/.#${hostcfg.hostname}";
-  };
-
   # Enable home-manager and git
   programs.home-manager.enable = true;
 

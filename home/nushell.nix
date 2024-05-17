@@ -1,4 +1,4 @@
-{...}: {
+{hostcfg, ...}: {
   programs = {
     nushell = {
       enable = true;
@@ -36,6 +36,7 @@
         vi = "hx";
         vim = "hx";
         nano = "hx";
+        quick-rebuild = "sudo rm ~/nixconf/flake.lock and sudo nixos-rebuild switch --flake ~/nixconf/.#${hostcfg.hostname}";
       };
     };
     carapace.enable = true;

@@ -93,7 +93,7 @@
               inherit inputs usercfg;
               inherit (usercfg.hosts.${hostname}) hostcfg;
             };
-            home-manager.users.${usercfg.username} = import ./home;
+            home-manager.users.${usercfg.username} = import ./home/base.nix;
           }
         ];
       };

@@ -9,7 +9,6 @@
         ./modules/base.nix
       ];
       home-modules = [
-        ./home/base.nix
         ./home/nushell.nix
       ];
     };
