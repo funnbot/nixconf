@@ -33,7 +33,7 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    # needed for vscode remove wsl fix
+    # needed for vscode remote wsl fix
     # replacement for nix-ld, for running dynamic binaries.
     # Precompiled binaries that were not created for NixOS usually have a so-called link-loader hardcoded into them.
     # On Linux/x86_64 this is for example /lib64/ld-linux-x86-64.so.2. for glibc.
@@ -49,6 +49,8 @@
       # NOTE: follows can break reproducable builds, so not always worth it
       # inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    vscode-server.url = "github:nix-community/nixos-vscode-server";
   };
 
   # function def
@@ -59,6 +61,7 @@
     NixOS-WSL,
     home-manager,
     nix-ld-rs,
+    vscode-server,
   } @ inputs: let
     usercfg = import ./usercfg.nix {inherit (nixpkgs) lib;};
     # Your custom packages and modifications, exported as overlays
@@ -67,7 +70,7 @@
     systemNames = ["x86_64-linux"];
     forAllSystems = func: (nixpkgs.lib.genAttrs systemNames func);
   in {
-    formatter = forAllSystems (system: nixpkgs.legacyPackages.${system}.alejandra);
+    formatter = forAllSystems (system: nixpkgs.legacyPackages.${system}.nixpkgs-fmt);
 
     # NixOS configuration entrypoint
     # Available through 'nixos-rebuild --flake .#your-hostname'

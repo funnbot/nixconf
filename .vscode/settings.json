@@ -2,4 +2,26 @@
   "files.eol": "\n",
   "editor.indentSize": 2,
   "editor.detectIndentation": false,
+  "nix.serverSettings": {
+    "nil": {
+      "nix": {
+        "maxMemoryMB": 4096,
+        "flake": {
+          "autoArchive": true,
+          "autoEvalInputs": true,
+          "nixpkgsInputName": "nixpkgs"
+        }
+      }
+    },
+    "nixd": {
+      // "nixpkgs": {
+      //   "expr": "import (builtins.getFlake \"/home/db/nixconf\").inputs.nixpkgs { }    "
+      // },
+      "options": {
+        "nixos": {
+          "expr": "(builtins.getFlake \"/home/db/nixconf\").nixosConfigurations.goblin_wsl.options"
+        }
+      }
+    }
+  }
 }

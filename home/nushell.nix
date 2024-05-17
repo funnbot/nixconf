@@ -2,7 +2,7 @@
   programs = {
     nushell = {
       enable = true;
-
+      
       # The config.nu can be anywhere you want if you like to edit your Nushell with Nu
       configFile.source = ./config.nu;
       # for editing directly to config.nu
@@ -36,7 +36,7 @@
         vi = "hx";
         vim = "hx";
         nano = "hx";
-        quick-rebuild = "sudo rm ~/nixconf/flake.lock and sudo nixos-rebuild switch --flake ~/nixconf/.#${hostcfg.hostname}";
+        quick-rebuild = "sudo rm ~/nixconf/flake.lock; sudo nixos-rebuild switch --flake ~/nixconf/.#${hostcfg.hostname}";
       };
     };
     carapace.enable = true;
