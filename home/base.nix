@@ -1,14 +1,13 @@
 # This is your home-manager configuration file
 # Use this to configure your home environment (it replaces ~/.config/nixpkgs/home.nix)
-{
-  inputs,
-  overlays,
-  lib,
-  config,
-  usercfg,
-  hostcfg,
-  pkgs,
-  ...
+{ inputs
+, overlays
+, lib
+, config
+, usercfg
+, hostcfg
+, pkgs
+, ...
 }: {
   imports = hostcfg.home-modules;
 
@@ -24,8 +23,6 @@
   programs.home-manager.enable = true;
 
   home.packages = with pkgs; [
-    nixd
-    unstable.nil
     nix-output-monitor
     unstable.sage
   ];

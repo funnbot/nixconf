@@ -1,12 +1,11 @@
-{
-  inputs,
-  overlays,
-  lib,
-  config,
-  usercfg,
-  hostcfg,
-  pkgs,
-  ...
+{ inputs
+, overlays
+, lib
+, config
+, usercfg
+, hostcfg
+, pkgs
+, ...
 }: {
   # You can import other NixOS modules here
   imports = [
@@ -40,6 +39,10 @@
 
     bashInteractive
     nushellFull
+
+    unstable.nil
+    unstable.nixd
+    nixpkgs-fmt
   ];
 
   environment.shells = with pkgs; [
@@ -53,7 +56,7 @@
     settings = {
       # Enable flakes and new 'nix' command
       experimental-features = "nix-command flakes";
-      trusted-users = ["@wheel"];
+      trusted-users = [ "@wheel" ];
     };
     # Opinionated: disable channels
     channel.enable = false;
@@ -81,7 +84,7 @@
       # ];
       # TODO: Be sure to add any other groups you need (such as networkmanager, audio, docker, etc)
       # "wheel" is for sudo
-      extraGroups = ["wheel"];
+      extraGroups = [ "wheel" ];
 
       shell = pkgs.nushellFull;
     };

@@ -3,12 +3,11 @@
 # https://search.nixos.org/options and in the NixOS manual (`nixos-help`).
 # NixOS-WSL specific options are documented on the NixOS-WSL repository:
 # https://github.com/nix-community/NixOS-WSL
-{
-  usercfg,
-  hostcfg,
-  ...
+{ usercfg
+, hostcfg
+, ...
 }: {
-  imports = [./hardware-configuration.nix] ++ hostcfg.modules;
+  imports = [ ./hardware-configuration.nix ] ++ hostcfg.modules;
   #usercfg.hostname = lib.mkForce "GOBLIN_WSL";
   wsl.enable = true;
   wsl.defaultUser = usercfg.username;
