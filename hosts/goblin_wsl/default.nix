@@ -7,19 +7,15 @@
   inputs,
   config,
   lib,
-  pkgs,
   usercfg,
+  hostcfg,
+  pkgs,
   ...
-}: let
-  usercfg.hostname = lib.mkForce "GOBLIN_WSL";
-in {
-  imports = [
-    ./hardware-configuration.nix
-    ../../modules/base.nix
-  ];
-
+}: {
+  imports = [./hardware-configuration.nix] ++ hostcfg.modules;
+  #usercfg.hostname = lib.mkForce "GOBLIN_WSL";
   wsl.enable = true;
-  wsl.defaultUser = "db";
+  wsl.defaultUser = usercfg.username;
   wsl.wslConf.automount.enabled = true;
   wsl.wslConf.interop.enabled = false;
   wsl.wslConf.interop.appendWindowsPath = false;

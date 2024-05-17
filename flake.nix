@@ -71,21 +71,29 @@
 
     # NixOS configuration entrypoint
     # Available through 'nixos-rebuild --flake .#your-hostname'
-    nixosConfigurations = {
-      goblin_wsl = nixpkgs.lib.nixosSystem {
+    nixosConfigurations = let
+      hostname = "goblin_wsl";
+    in {
+      ${hostname} = nixpkgs.lib.nixosSystem {
         # allow usage of inputs in modules
-        specialArgs = {inherit inputs overlays usercfg;};
+        specialArgs = {
+          inherit inputs usercfg overlays;
+          inherit (usercfg.hosts.${hostname}) hostcfg;
+        };
 
         modules = [
-          ./hosts/goblin_wsl
+          ./hosts/${hostname}
           NixOS-WSL.nixosModules.wsl
           home-manager.nixosModules.home-manager
           {
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
             # allow usage of inputs in modules from ./home
-            home-manager.extraSpecialArgs = {inherit inputs usercfg;};
-            home-manager.users.db = import ./home;
+            home-manager.extraSpecialArgs = {
+              inherit inputs usercfg;
+              inherit (usercfg.hosts.${hostname}) hostcfg;
+            };
+            home-manager.users.${usercfg.username} = import ./home;
           }
         ];
       };

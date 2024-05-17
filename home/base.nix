@@ -6,32 +6,22 @@
   lib,
   config,
   usercfg,
+  hostcfg,
   pkgs,
   ...
 }: {
-  # You can import other home-manager modules here
-  imports = [
-    # If you want to use modules your own flake exports (from modules/home-manager):
-    # outputs.homeManagerModules.example
+  imports = hostcfg.home-modules;
 
-    # Or modules exported from other flakes (such as nix-colors):
-    # inputs.nix-colors.homeManagerModules.default
-
-    # You can also split up your configuration and import pieces of it here:
-    # ./nvim.nix
-    ./nushell.nix
-  ];
-  _ = builtins.trace usercfg "asd";
   home = {
-    username = "db";
-    homeDirectory = "/home/db";
+    username = usercfg.username;
+    homeDirectory = "/home/${usercfg.username}";
     sessionPath = [
       "/mnt/c/Users/db/Programs/vscode/bin"
     ];
   };
 
   programs.nushell.shellAliases = {
-    quick-rebuild = "sudo rm ~/nixconf/flake.lock and sudo nixos-rebuild switch --flake ~/nixconf/.#goblin_wsl";
+    quick-rebuild = "sudo rm ~/nixconf/flake.lock and sudo nixos-rebuild switch --flake ~/nixconf/.#${hostcfg.hostname}";
   };
 
   # Enable home-manager and git
@@ -39,7 +29,7 @@
 
   home.packages = with pkgs; [
     nixd
-    nil
+    unstable.nil
     nix-output-monitor
     unstable.sage
   ];
