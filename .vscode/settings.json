@@ -3,6 +3,10 @@
   "editor.indentSize": 2,
   "editor.detectIndentation": false,
   "github.copilot.editor.enableAutoCompletions": true,
+  "nix.formatterPath": [
+    "alejandra",
+    "--"
+  ],
   "nix.serverSettings": {
     "nil": {
       "nix": {
@@ -15,9 +19,15 @@
       }
     },
     "nixd": {
-      // "nixpkgs": {
-      //   "expr": "import (builtins.getFlake \"/home/db/nixconf\").inputs.nixpkgs { }    "
-      // },
+      "formatting": {
+        "command": [
+          "alejandra",
+          "--"
+        ]
+      },
+      "nixpkgs": {
+        "expr": "import (builtins.getFlake \"/home/db/nixconf\").inputs.nixpkgs { }    "
+      },
       "options": {
         "nixos": {
           "expr": "(builtins.getFlake \"/home/db/nixconf\").nixosConfigurations.goblin_wsl.options"

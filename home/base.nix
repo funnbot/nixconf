@@ -1,31 +1,27 @@
 # This is your home-manager configuration file
 # Use this to configure your home environment (it replaces ~/.config/nixpkgs/home.nix)
-{ inputs
-, overlays
-, lib
-, config
-, usercfg
-, hostcfg
-, pkgs
-, ...
+{
+  inputs,
+  overlays,
+  lib,
+  config,
+  usercfg,
+  hostcfg,
+  pkgs,
+  ...
 }: {
   imports = hostcfg.home-modules;
 
   home = {
     username = usercfg.username;
     homeDirectory = "/home/${usercfg.username}";
-    sessionPath = [
-      "/mnt/c/Users/db/Programs/vscode/bin"
-    ];
+    sessionPath = ["/mnt/c/Users/db/Programs/vscode/bin"];
   };
 
   # Enable home-manager and git
   programs.home-manager.enable = true;
 
-  home.packages = with pkgs; [
-    nix-output-monitor
-    unstable.sage
-  ];
+  home.packages = with pkgs; [nix-output-monitor unstable.sage];
 
   programs.git = {
     enable = true;
@@ -33,9 +29,7 @@
     userEmail = "22226942+funnbot@users.noreply.github.com";
   };
 
-  programs.gh = {
-    enable = true;
-  };
+  programs.gh = {enable = true;};
 
   programs.bash = {
     enable = true;

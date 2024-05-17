@@ -1,4 +1,4 @@
-{ hostcfg, ... }: {
+{hostcfg, ...}: {
   programs = {
     nushell = {
       enable = true;

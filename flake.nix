@@ -4,9 +4,7 @@
   # the nixConfig here only affects the flake itself, not the system configuration!
   nixConfig = {
     # substituers will be appended to the default substituters when fetching packages
-    extra-substituters = [
-      "https://nix-community.cachix.org"
-    ];
+    extra-substituters = ["https://nix-community.cachix.org"];
     extra-trusted-public-keys = [
       "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
     ];
@@ -54,57 +52,53 @@
   };
 
   # function def
-  outputs =
-    { self
-    , nixpkgs
-    , nixpkgs-unstable
-    , NixOS-WSL
-    , home-manager
-    , nix-ld-rs
-    , vscode-server
-    ,
-    } @ inputs:
-    let
-      usercfg = import ./usercfg.nix { inherit (nixpkgs) lib; };
-      # Your custom packages and modifications, exported as overlays
-      overlays = import ./overlays { inherit inputs; };
+  outputs = {
+    self,
+    nixpkgs,
+    nixpkgs-unstable,
+    NixOS-WSL,
+    home-manager,
+    nix-ld-rs,
+    vscode-server,
+  } @ inputs: let
+    usercfg = import ./usercfg.nix {inherit (nixpkgs) lib;};
+    # Your custom packages and modifications, exported as overlays
+    overlays = import ./overlays {inherit inputs;};
 
-      systemNames = [ "x86_64-linux" ];
-      forAllSystems = func: (nixpkgs.lib.genAttrs systemNames func);
-    in
-    {
-      formatter = forAllSystems (system: nixpkgs.legacyPackages.${system}.nixpkgs-fmt);
+    systemNames = ["x86_64-linux"];
+    forAllSystems = func: (nixpkgs.lib.genAttrs systemNames func);
+  in {
+    formatter =
+      forAllSystems (system: nixpkgs.legacyPackages.${system}.alejandra);
 
-      # NixOS configuration entrypoint
-      # Available through 'nixos-rebuild --flake .#your-hostname'
-      nixosConfigurations =
-        let
-          hostname = "goblin_wsl";
-        in
-        {
-          ${hostname} = nixpkgs.lib.nixosSystem {
-            # allow usage of inputs in modules
-            specialArgs = {
-              inherit inputs usercfg overlays;
+    # NixOS configuration entrypoint
+    # Available through 'nixos-rebuild --flake .#your-hostname'
+    nixosConfigurations = let
+      hostname = "goblin_wsl";
+    in {
+      ${hostname} = nixpkgs.lib.nixosSystem {
+        # allow usage of inputs in modules
+        specialArgs = {
+          inherit inputs usercfg overlays;
+          inherit (usercfg.hosts.${hostname}) hostcfg;
+        };
+
+        modules = [
+          ./hosts/${hostname}
+          NixOS-WSL.nixosModules.wsl
+          home-manager.nixosModules.home-manager
+          {
+            home-manager.useGlobalPkgs = true;
+            home-manager.useUserPackages = true;
+            # allow usage of inputs in modules from ./home
+            home-manager.extraSpecialArgs = {
+              inherit inputs usercfg;
               inherit (usercfg.hosts.${hostname}) hostcfg;
             };
-
-            modules = [
-              ./hosts/${hostname}
-              NixOS-WSL.nixosModules.wsl
-              home-manager.nixosModules.home-manager
-              {
-                home-manager.useGlobalPkgs = true;
-                home-manager.useUserPackages = true;
-                # allow usage of inputs in modules from ./home
-                home-manager.extraSpecialArgs = {
-                  inherit inputs usercfg;
-                  inherit (usercfg.hosts.${hostname}) hostcfg;
-                };
-                home-manager.users.${usercfg.username} = import ./home/base.nix;
-              }
-            ];
-          };
-        };
+            home-manager.users.${usercfg.username} = import ./home/base.nix;
+          }
+        ];
+      };
     };
+  };
 }
