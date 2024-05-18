@@ -65,8 +65,8 @@
     channel.enable = false;
 
     # Opinionated: make flake registry and nix path match flake inputs
-    registry = lib.mapAttrs (_: flake: {inherit flake;}) flakeInputs;
-    nixPath = lib.mapAttrsToList (n: _: "${n}=flake:${n}") flakeInputs;
+    # registry = lib.mapAttrs (_: flake: {inherit flake;}) flakeInputs;
+    # nixPath = lib.mapAttrsToList (n: _: "${n}=flake:${n}") flakeInputs;
   };
 
   programs.nix-ld = {
@@ -75,7 +75,7 @@
   };
 
   # TODO: Set your hostname
-  networking.hostName = hostcfg.hostname;
+  networking.hostName = builtins.break hostcfg.hostname;
 
   # TODO: Configure your system-wide user settings (groups, etc), add more users as needed.
   users.users = {
@@ -93,7 +93,7 @@
       # "wheel" is for sudo
       extraGroups = ["wheel"];
 
-      shell = pkgs.nushellFull;
+      shell = pkgs.bashInteractive;
     };
   };
 }
