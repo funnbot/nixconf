@@ -10,7 +10,13 @@
   pkgs,
   ...
 }: {
-  imports = hostcfg.home-modules;
+  imports =
+    [
+      inputs.vscode-server.nixosModules.home
+    ]
+    ++ hostcfg.home-modules;
+
+  services.vscode-server.enable = true;
 
   home = {
     username = usercfg.username;
@@ -36,6 +42,10 @@
   programs.bash = {
     enable = true;
     enableCompletion = true;
+    shellAliases = {
+      quick-rebuild = "sudo nixos-rebuild switch --flake ~/nixconf/.#${hostcfg.hostname}";
+      nix-rebuild-debug = "sudo nix build '.#nixosConfigurations.${hostcfg.hostname}.config.system.build.toplevel' --debugger --impure --ignore-try --no-warn-dirty";
+    };
   };
 
   # systemd.user.services.vscode-server.wantedBy = ["default.target"];

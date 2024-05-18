@@ -51,6 +51,8 @@
     vscode-server.url = "github:nix-community/nixos-vscode-server";
   };
 
+  # breakpoints: (_: builtins.break _)
+
   # function def
   outputs = {
     self,

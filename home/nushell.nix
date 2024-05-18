@@ -9,6 +9,7 @@
         vim = "hx";
         nano = "hx";
         quick-rebuild = "sudo nixos-rebuild switch --flake ~/nixconf/.#${hostcfg.hostname}";
+        nix-rebuild-debug = "sudo nix build '.#nixosConfigurations.${hostcfg.hostname}.config.system.build.toplevel' --debugger --impure --ignore-try --no-warn-dirty";
       };
     };
     carapace.enable = true;
