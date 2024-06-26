@@ -18,6 +18,8 @@
     # at the same time. Here's an working example:
     nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
 
+    nixos-hardware.url = "github:nixos/nixos-hardware";
+
     NixOS-WSL = {
       url = "github:nix-community/NixOS-WSL";
       # inputs.nixpkgs.follows = "nixpkgs";
@@ -88,6 +90,32 @@
         modules = [
           ./hosts/${hostname}
           NixOS-WSL.nixosModules.wsl
+          home-manager.nixosModules.home-manager
+          {
+            home-manager.useGlobalPkgs = true;
+            home-manager.useUserPackages = true;
+            # allow usage of inputs in modules from ./home
+            home-manager.extraSpecialArgs = {
+              inherit inputs usercfg;
+              inherit (usercfg.hosts.${hostname}) hostcfg;
+            };
+            home-manager.users.${usercfg.username} = import ./home/base.nix;
+          }
+        ];
+      };
+    nixosConfigurations.macbook-nix = let
+      hostname = "macbook-nix";
+    in {
+      nixpkgs.lib.nixosSystem {
+        # allow usage of inputs in modules
+        specialArgs = {
+          inherit inputs usercfg overlays;
+          inherit (usercfg.hosts.${hostname}) hostcfg;
+        };
+
+        modules = [
+          ./hosts/${hostname}
+          nixos-hardware.nixosModules.apple-t2
           home-manager.nixosModules.home-manager
           {
             home-manager.useGlobalPkgs = true;

@@ -8,5 +8,11 @@
       modules = [./modules/base.nix];
       home-modules = [./home/nushell.nix];
     };
+
+    macbook-nix.hostcfg = {
+      hostname = "macbook-nix";
+      modules = [ ./modules/base.nix ];
+      home-modules = [ ./home/nushell.nix ];
+    };
   };
 }
