@@ -34,6 +34,7 @@
   fileSystems."/crossdata" =
     { device = "/dev/disk/by-uuid/6675-1B7D";
       fsType = "exfat";
+      options = [ "uid=1000" "gid=1000" ];
     };
 
   fileSystems."/boot" =
