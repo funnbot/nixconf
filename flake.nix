@@ -77,10 +77,9 @@
 
     # NixOS configuration entrypoint
     # Available through 'nixos-rebuild --flake .#your-hostname'
-    nixosConfigurations = let
+    nixosConfigurations.goblin-wsl = let
       hostname = "goblin-wsl";
-    in {
-      ${hostname} = nixpkgs.lib.nixosSystem {
+    in nixpkgs.lib.nixosSystem {
         # allow usage of inputs in modules
         specialArgs = {
           inherit inputs usercfg overlays;
@@ -105,8 +104,7 @@
       };
     nixosConfigurations.macbook-nix = let
       hostname = "macbook-nix";
-    in {
-      nixpkgs.lib.nixosSystem {
+    in nixpkgs.lib.nixosSystem {
         # allow usage of inputs in modules
         specialArgs = {
           inherit inputs usercfg overlays;
@@ -130,5 +128,4 @@
         ];
       };
     };
-  };
 }
