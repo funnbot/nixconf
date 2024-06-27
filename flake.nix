@@ -61,6 +61,7 @@
     nixpkgs,
     nixpkgs-unstable,
     NixOS-WSL,
+    nixos-hardware,
     home-manager,
     nix-ld-rs,
     vscode-server,
