@@ -46,7 +46,17 @@
     displayManager.gdm.enable = true;
     displayManager.gnome.enable = true;
   };
-  
+
+  hardware.firmware = [
+    (stdenvNoCC.mkDerivation (final: {
+      name = "brcm-firmware";
+      src = ../../firmware/macbook-nix/brcm;
+      installPhase = ''
+        mkdir -p $out/lib/firmware/brcm
+        cp ${final.src}/* "$out/lib/firmware/brcm"
+      '';
+    }))
+  ];
 
   # Configure keymap in X11
   # services.xserver.xkb.layout = "us";
