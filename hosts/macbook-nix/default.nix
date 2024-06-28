@@ -20,8 +20,21 @@
 
   # networking.hostName = "nixos"; # Define your hostname.
   # Pick only one of the below networking options.
-  networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
+  # Enables wireless support via wpa_supplicant.
   # networking.networkmanager.enable = true;  # Easiest to use and most distros use this by default.
+  networking.wireless = {
+    enable = true;
+    userControlled = {
+      enable = true;
+      group = "network";
+    }; 
+    environmentFile = ../../secrets/wireless.env;
+    networks = {
+      Holly_5G = {
+        psk = "@PSK_HOLLY5G@";
+      };
+    };
+  };
 
   # Set your time zone.
   time.timeZone = "America/Los_Angeles";
@@ -50,7 +63,7 @@
       name = "brcm-firmware";
       src = ../../firmware/macbook-nix/brcm;
       installPhase = ''
-        mkdir -p $out/lib/firmware/brcm
+        mkdir -p "$out/lib/firmware/brcm"
         cp ${final.src}/* "$out/lib/firmware/brcm"
       '';
     }))
