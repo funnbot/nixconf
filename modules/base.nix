@@ -43,6 +43,8 @@
     unstable.nil
     unstable.nixd
     alejandra
+
+    gnome.adwaita-icon-theme
   ];
 
   environment.shells = with pkgs; [bashInteractive nushellFull];
@@ -91,7 +93,7 @@
       # ];
       # TODO: Be sure to add any other groups you need (such as networkmanager, audio, docker, etc)
       # "wheel" is for sudo
-      extraGroups = ["wheel" "network"];
+      extraGroups = ["wheel"];
 
       shell = pkgs.bashInteractive;
     };

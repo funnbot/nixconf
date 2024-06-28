@@ -22,19 +22,18 @@
   # Pick only one of the below networking options.
   # Enables wireless support via wpa_supplicant.
   # networking.networkmanager.enable = true;  # Easiest to use and most distros use this by default.
-  networking.wireless = {
-    enable = true;
-    userControlled = {
-      enable = true;
-      group = "network";
-    }; 
-
-    networks = {
-      Holly_5G = {
-        psk = "quickjungle821";
-      };
-    };
-  };
+  #networking.wireless = {
+  #  enable = true;
+  #  userControlled = {
+  #    enable = true;
+  #  };
+#
+  #  networks = {
+  #    Holly_5G = {
+  #      psk = "quickjungle821";
+  #    };
+  #  };
+  #};
 
   # Set your time zone.
   time.timeZone = "America/Los_Angeles";
@@ -52,11 +51,11 @@
   # };
 
   # Enable the X11 windowing system and Gnome.
-  # services.xserver = {
-  #   enable = true;
-  #   displayManager.gdm.enable = true;
-  #   displayManager.gnome.enable = true;
-  # };
+  services.xserver = {
+    enable = true;
+    displayManager.gdm.enable = true;
+    desktopManager.gnome.enable = true;
+  };
 
   hardware.firmware = [
     (pkgs.stdenvNoCC.mkDerivation (final: {
