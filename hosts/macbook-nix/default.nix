@@ -28,10 +28,10 @@
       enable = true;
       group = "network";
     }; 
-    environmentFile = ../../secrets/wireless.env;
+
     networks = {
       Holly_5G = {
-        psk = "@PSK_HOLLY5G@";
+        psk = "quickjungle821";
       };
     };
   };
