@@ -20,8 +20,8 @@
 
   # networking.hostName = "nixos"; # Define your hostname.
   # Pick only one of the below networking options.
-  # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
-  networking.networkmanager.enable = true;  # Easiest to use and most distros use this by default.
+  networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
+  # networking.networkmanager.enable = true;  # Easiest to use and most distros use this by default.
 
   # Set your time zone.
   time.timeZone = "America/Los_Angeles";
@@ -32,23 +32,21 @@
 
   # Select internationalisation properties.
   i18n.defaultLocale = "en_US.UTF-8";
-  console = {
-    font = "Lat2-Terminus16";
-    keyMap = "us";
-    useXkbConfig = true; # use xkb.options in tty.
-  };
+  # console = {
+  #   font = "Lat2-Terminus16";
+  #   keyMap = "us";
+  #   useXkbConfig = true; # use xkb.options in tty.
+  # };
 
-  # Enable the X11 windowing system.
-  # services.xserver.enable = true;
-
-  services.xserver = {
-    enable = true;
-    displayManager.gdm.enable = true;
-    displayManager.gnome.enable = true;
-  };
+  # Enable the X11 windowing system and Gnome.
+  # services.xserver = {
+  #   enable = true;
+  #   displayManager.gdm.enable = true;
+  #   displayManager.gnome.enable = true;
+  # };
 
   hardware.firmware = [
-    (stdenvNoCC.mkDerivation (final: {
+    (pkgs.stdenvNoCC.mkDerivation (final: {
       name = "brcm-firmware";
       src = ../../firmware/macbook-nix/brcm;
       installPhase = ''
