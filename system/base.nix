@@ -10,7 +10,6 @@
 }: {
   # You can import other NixOS modules here
   imports = [
-    inputs.vscode-server.nixosModules.default
     # If you want to use modules your own flake exports (from modules/nixos):
     # outputs.nixosModules.example
 
@@ -21,8 +20,6 @@
     # You can also split up your configuration and import pieces of it here:
     # ./users.nix
   ];
-
-  services.vscode-server.enable = true;
 
   nixpkgs = {
     overlays = [overlays.unstable-packages];

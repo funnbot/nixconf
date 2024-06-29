@@ -72,6 +72,9 @@
 
     systemNames = ["x86_64-linux" "x86_64-darwin"];
     forAllSystems = func: (nixpkgs.lib.genAttrs systemNames func);
+
+    hostNames = builtins.trace builtins.readDir ./hosts builtins.readDir ./hosts;
+    forAllHosts = func: (nixpkgs.lib.genAttrs hostNames func);
   in {
     formatter =
       forAllSystems (system: nixpkgs.legacyPackages.${system}.alejandra);
