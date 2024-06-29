@@ -6,13 +6,13 @@
     goblin-wsl.hostcfg = {
       hostname = "goblin-wsl";
       modules = [./modules/base.nix];
-      home-modules = [./home/nushell.nix];
+      home-modules = [./home/nushell.nix ./home/wsl/vscode-server.nix];
     };
 
     macbook-nix.hostcfg = {
       hostname = "macbook-nix";
-      modules = [ ./modules/base.nix ];
-      home-modules = [ ./home/nushell.nix ];
+      modules = [./modules/base.nix];
+      home-modules = [./home/nushell.nix];
     };
   };
 }

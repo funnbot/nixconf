@@ -70,7 +70,7 @@
     # Your custom packages and modifications, exported as overlays
     overlays = import ./overlays {inherit inputs;};
 
-    systemNames = ["x86_64-linux"];
+    systemNames = ["x86_64-linux" "x86_64-darwin"];
     forAllSystems = func: (nixpkgs.lib.genAttrs systemNames func);
   in {
     formatter =
@@ -80,7 +80,8 @@
     # Available through 'nixos-rebuild --flake .#your-hostname'
     nixosConfigurations.goblin-wsl = let
       hostname = "goblin-wsl";
-    in nixpkgs.lib.nixosSystem {
+    in
+      nixpkgs.lib.nixosSystem {
         # allow usage of inputs in modules
         specialArgs = {
           inherit inputs usercfg overlays;
@@ -105,7 +106,8 @@
       };
     nixosConfigurations.macbook-nix = let
       hostname = "macbook-nix";
-    in nixpkgs.lib.nixosSystem {
+    in
+      nixpkgs.lib.nixosSystem {
         # allow usage of inputs in modules
         specialArgs = {
           inherit inputs usercfg overlays;
@@ -128,5 +130,5 @@
           }
         ];
       };
-    };
+  };
 }
