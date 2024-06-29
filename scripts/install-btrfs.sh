@@ -1,5 +1,6 @@
 #!/bin/bash
 
+# TODO: https://github.com/nix-community/disko/ except it doesnt support dual booting/preserving a partition
 # WARNING: untested
 
 # enable strict bash mode
@@ -117,7 +118,7 @@ function mount_btrfs() {
 
     # print the partition information and ask the user if it is correct
     print_part_info $main_part
-    read -p "Is this the correct partition? (y/N): " confirmation
+    read -r -p "Is this the correct partition? (y/N): " confirmation
     if [[ ! "$confirmation" =~ ^[Yy]$ ]]; then
         echo "Operation cancelled."
         exit 1
