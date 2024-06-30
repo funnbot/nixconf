@@ -3,8 +3,13 @@
   "editor.indentSize": 2,
   "editor.detectIndentation": false,
   "github.copilot.editor.enableAutoCompletions": true,
+  "nix.enableLanguageServer": true,
+  "nix.serverPath": "nixd",
   "nix.formatterPath": [
-    "alejandra",
+    "nix",
+    "fmt",
+    "--",
+    "-"
   ],
   "nix.serverSettings": {
     "nil": {
@@ -20,7 +25,10 @@
     "nixd": {
       "formatting": {
         "command": [
-          "alejandra",
+          "nix",
+          "fmt",
+          "--",
+          "-"
         ]
       },
       // "nixpkgs": {
@@ -28,7 +36,7 @@
       // },
       "options": {
         "nixos": {
-          "expr": "(builtins.getFlake \"/home/db/nixconf\").nixosConfigurations.goblin-wsl.options"
+          "expr": "(builtins.getFlake \"/Volumes/CrossData/nixconf\").darwinConfigurations.macbook.options"
         }
       }
     }

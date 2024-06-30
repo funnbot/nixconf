@@ -19,10 +19,13 @@ in {
       type = types.strMatching "/.*";
       description = "The path to the main flake repo.";
     };
-  };
-
-  options.configuration = mkOption {
-    type = types.attrs;
-    description = "The configuration for the host.";
+    # configOutputName = mkOption {
+    #   type = types.str;
+    #   default = "nixosConfiguration";
+    #   description = "The name of the output in the flake.";
+    # };
+    # builder = mkOption {
+    #   type = types.functionTo types.attr;
+    # };
   };
 }

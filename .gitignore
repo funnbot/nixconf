@@ -5,5 +5,3 @@
 
 /secrets/**/*
 !/secrets/**/*.template.env
-
-/flake.lock

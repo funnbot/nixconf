@@ -1,8 +1,15 @@
-{hostname, inputs}: {
-  host = {
-    username = "dillon";
-    flakeRepoPath = "/crossdata/nixconf";
-  };
+{
+  hostname,
+  inputs,
+  ...
+}: {
+  imports = [
+    ./configuration.nix
+  ];
 
-  configuration = import ./configuration.nix;
+  host.username = "dillon";
+  host.flakeRepoPath = "/crossdata/nixconf";
+
+  # configOutputName = "darwinConfigurations";
+  # builder = inputs.nix-darwin.lib.darwinSystem;
 }

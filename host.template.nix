@@ -1,6 +1,12 @@
-{hostname}: {
+{
+  hostname,
+  lib,
+  inputs,
+}: {
   host = {
     username = "db";
-    flakeRepoPath = "~/nixconf";
-  }
+    flakeRepoPath = "/home/db/nixconf";
+    configOutputName = "nixosConfiguration";
+    builder = lib.nixosSystem;
+  };
 }

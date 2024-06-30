@@ -72,6 +72,8 @@
     nix-ld-rs,
     vscode-server,
   } @ inputs: let
+    inherit (nixpkgs) lib;
+
     # Your custom packages and modifications, exported as overlays
     overlays = import ./overlays {inherit inputs;};
 
@@ -84,24 +86,52 @@
     #hostNames = builtins.trace (readDirsToList ./hosts) (readDirsToList ./hosts);
     hostNames = ["macbook"];
     forAllHosts = func: (nixpkgs.lib.genAttrs hostNames func);
+    # home = ./home;
+    # mods = import ./modules {} // ;
+    # hostBuilders = forAllHosts (hostname:
+    #   lib.evalModules {
+    #     modules = [
+    #       mods.host
+    #       ./hosts/${hostname}
+    #     ];
+    # });
+    # configurations = forAllHosts (hostname: (
+    #   let host = hostBuilders.${hostname}; in {
+    #     ${host.configOutputName} = host.builder {
+    #       modules = [
+    #         ${mods}/
+    #       ]
+    #     }
+    #   }
+    # ));
   in {
     formatter =
       forAllSystems (system: nixpkgs.legacyPackages.${system}.alejandra);
 
+    darwinConfigurations.macbook = nix-darwin.lib.darwinSystem {
+      modules = [
+        ./modules/host.nix
+        ./hosts/macbook
+      ];
+      specialArgs = {inherit self inputs overlays;};
+    };
+
+    # imports = builtins.map (hostname: ./hosts/${hostname}/default.nix) hostNames;
+
     # NixOS configuration entrypoint
     # Available through 'nixos-rebuild --flake .#your-hostname'
-    nixosConfigurations = forAllHosts (hostname:
-      let 
-        host = import ./hosts/${hostname}/default.nix {inherit hostname inputs;};
-      in
-      host.configuration {
-        specialArgs = {
-          inherit inputs overlays hostname;
-        };
+    # nixosConfigurations = forAllHosts (hostname:
+    #   let
+    #     host = import ./hosts/${hostname}/default.nix {inherit hostname inputs;};
+    #   in
+    #   nixpkgs.lib.nixosSystem {
+    #     specialArgs = {
+    #       inherit inputs overlays hostname;
+    #     };
 
-        modules = [
-          ./hosts/${hostname}
-        ];
-      });
+    #     modules = [
+    #       ./hosts/${hostname}
+    #     ];
+    #   });
   };
 }
