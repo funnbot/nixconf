@@ -81,7 +81,8 @@
     directoriesAsList = attrSet: builtins.filter (name: attrSet.${name} == "directory") (builtins.attrNames attrSet);
     readDirsToList = path: directoriesAsList (builtins.readDir path);
 
-    hostNames = builtins.trace (readDirsToList ./hosts) (readDirsToList ./hosts);
+    #hostNames = builtins.trace (readDirsToList ./hosts) (readDirsToList ./hosts);
+    hostNames = ["macbook"];
     forAllHosts = func: (nixpkgs.lib.genAttrs hostNames func);
   in {
     formatter =
@@ -89,8 +90,11 @@
 
     # NixOS configuration entrypoint
     # Available through 'nixos-rebuild --flake .#your-hostname'
-    nixosConfigurations = builtins.trace (forAllHosts (hostname:
-      nixpkgs.lib.nixosSystem {
+    nixosConfigurations = forAllHosts (hostname:
+      let 
+        host = import ./hosts/${hostname}/default.nix {inherit hostname inputs;};
+      in
+      host.configuration {
         specialArgs = {
           inherit inputs overlays hostname;
         };
@@ -98,6 +102,6 @@
         modules = [
           ./hosts/${hostname}
         ];
-      })) {};
+      });
   };
 }
