@@ -1,17 +1,28 @@
+# module for general configuration of a host, for use in other modules or home configs
 {
   config,
   lib,
-  pkgs,
   ...
 }:
 with lib; let
   cfg = config.host;
 in {
   options.host = {
-    name = mkOption {
+    username = mkOption {
       type = types.str;
-      default = "nix";
-      description = "The hostname of the system.";
+      default = "db";
+      description = "The admin username for the system.";
     };
+    flakeRepoPath = mkOption {
+      # only allow absolute paths
+      # builtins.match matches precisely, so its like "^...$"
+      type = types.strMatching "/.*";
+      description = "The path to the main flake repo.";
+    };
+  };
+
+  options.configuration = mkOption {
+    type = types.attrs;
+    description = "The configuration for the host.";
   };
 }

@@ -5,16 +5,19 @@
   config,
   lib,
   pkgs,
-  hostcfg,
-  usercfg,
+  inputs,
   ...
 }: {
-  imports =
-    [
-      # Include the results of the hardware scan.
-      ./hardware-configuration.nix
-    ]
-    ++ hostcfg.modules;
+  imports = [
+    # Include the results of the hardware scan.
+    ./hardware-configuration.nix
+    inputs.nixos-hardware.nixosModules.apple-t2
+  ];
+
+  host = {
+    username = "db";
+    flakeRepoPath = "/crossdata/nixconf";
+  };
 
   # Use the systemd-boot EFI boot loader.
 

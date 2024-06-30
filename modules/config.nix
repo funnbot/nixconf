@@ -1,13 +1,15 @@
+# a module to build the configuration.nix
 {
   inputs,
   overlays,
   lib,
   config,
-  usercfg,
-  hostcfg,
   pkgs,
+  hostname,
   ...
-}: {
+} @ args: let
+  hostcfg = import ../hosts/${hostname}/default.nix args;
+in {
   # You can import other NixOS modules here
   imports = [
     # If you want to use modules your own flake exports (from modules/nixos):

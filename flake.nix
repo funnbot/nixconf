@@ -20,6 +20,11 @@
 
     nixos-hardware.url = "github:nixos/nixos-hardware";
 
+    nix-darwin = {
+      url = "github:LnL7/nix-darwin";
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
+    };
+
     NixOS-WSL = {
       url = "github:nix-community/NixOS-WSL";
       # inputs.nixpkgs.follows = "nixpkgs";
@@ -60,20 +65,23 @@
     self,
     nixpkgs,
     nixpkgs-unstable,
+    nix-darwin,
     NixOS-WSL,
     nixos-hardware,
     home-manager,
     nix-ld-rs,
     vscode-server,
   } @ inputs: let
-    usercfg = import ./usercfg.nix {inherit (nixpkgs) lib;};
     # Your custom packages and modifications, exported as overlays
     overlays = import ./overlays {inherit inputs;};
 
-    systemNames = ["x86_64-linux" "x86_64-darwin"];
+    systemNames = nixpkgs.lib.systems.flakeExposed;
     forAllSystems = func: (nixpkgs.lib.genAttrs systemNames func);
 
-    hostNames = builtins.trace builtins.readDir ./hosts builtins.readDir ./hosts;
+    directoriesAsList = attrSet: builtins.filter (name: attrSet.${name} == "directory") (builtins.attrNames attrSet);
+    readDirsToList = path: directoriesAsList (builtins.readDir path);
+
+    hostNames = builtins.trace (readDirsToList ./hosts) (readDirsToList ./hosts);
     forAllHosts = func: (nixpkgs.lib.genAttrs hostNames func);
   in {
     formatter =
@@ -81,57 +89,15 @@
 
     # NixOS configuration entrypoint
     # Available through 'nixos-rebuild --flake .#your-hostname'
-    nixosConfigurations.goblin-wsl = let
-      hostname = "goblin-wsl";
-    in
+    nixosConfigurations = builtins.trace (forAllHosts (hostname:
       nixpkgs.lib.nixosSystem {
-        # allow usage of inputs in modules
         specialArgs = {
-          inherit inputs usercfg overlays;
-          inherit (usercfg.hosts.${hostname}) hostcfg;
+          inherit inputs overlays hostname;
         };
 
         modules = [
           ./hosts/${hostname}
-          NixOS-WSL.nixosModules.wsl
-          home-manager.nixosModules.home-manager
-          {
-            home-manager.useGlobalPkgs = true;
-            home-manager.useUserPackages = true;
-            # allow usage of inputs in modules from ./home
-            home-manager.extraSpecialArgs = {
-              inherit inputs usercfg;
-              inherit (usercfg.hosts.${hostname}) hostcfg;
-            };
-            home-manager.users.${usercfg.username} = import ./home/base.nix;
-          }
         ];
-      };
-    nixosConfigurations.macbook-nix = let
-      hostname = "macbook-nix";
-    in
-      nixpkgs.lib.nixosSystem {
-        # allow usage of inputs in modules
-        specialArgs = {
-          inherit inputs usercfg overlays;
-          inherit (usercfg.hosts.${hostname}) hostcfg;
-        };
-
-        modules = [
-          ./hosts/${hostname}
-          nixos-hardware.nixosModules.apple-t2
-          home-manager.nixosModules.home-manager
-          {
-            home-manager.useGlobalPkgs = true;
-            home-manager.useUserPackages = true;
-            # allow usage of inputs in modules from ./home
-            home-manager.extraSpecialArgs = {
-              inherit inputs usercfg;
-              inherit (usercfg.hosts.${hostname}) hostcfg;
-            };
-            home-manager.users.${usercfg.username} = import ./home/base.nix;
-          }
-        ];
-      };
+      })) {};
   };
 }

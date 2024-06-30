@@ -3,12 +3,17 @@
 # https://search.nixos.org/options and in the NixOS manual (`nixos-help`).
 # NixOS-WSL specific options are documented on the NixOS-WSL repository:
 # https://github.com/nix-community/NixOS-WSL
-{
-  usercfg,
-  hostcfg,
-  ...
-}: {
-  imports = [./hardware-configuration.nix] ++ hostcfg.modules;
+{inputs, ...}: {
+  imports = [
+    ./hardware-configuration.nix
+    inputs.NixOS-WSL.nixosModules.wsl
+  ];
+
+  host = {
+    username = "db";
+    flakeRepoPath = "~/nixconf";
+  };
+
   wsl.enable = true;
   wsl.defaultUser = usercfg.username;
   wsl.wslConf.network.hostname = hostcfg.hostname;
