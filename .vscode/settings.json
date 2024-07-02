@@ -28,12 +28,9 @@
         ]
       },
       "nixpkgs": {
-        "expr": "import (builtins.getFlake \"/Volumes/CrossData/nixconf\").inputs.nixpkgs { }    "
+        "expr": "import (builtins.getFlake \"/Volumes/CrossData/nixconf\").inputs.nixpkgs { }"
       },
       "options": {
-        "nixos": {
-          "expr": "{}"
-        },
         "nix-darwin": {
           "expr": "(builtins.getFlake \"/Volumes/CrossData/nixconf\").darwinConfigurations.macbook.options"
         },

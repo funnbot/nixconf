@@ -63,79 +63,69 @@
 
   # function def
   outputs = {
-    self,
-    nixpkgs,
-    nixpkgs-unstable,
-    nix-darwin,
-    NixOS-WSL,
-    nixos-hardware,
-    home-manager,
-    nix-ld-rs,
-    vscode-server,
+    self, ...
   } @ inputs: let
-    inherit (nixpkgs) lib;
+    inherit (inputs.nixpkgs) lib;
 
     # Your custom packages and modifications, exported as overlays
     overlays = import ./overlays {inherit inputs;};
 
-    systemNames = nixpkgs.lib.systems.flakeExposed;
-    forAllSystems = func: (nixpkgs.lib.genAttrs systemNames func);
+    systemNames = lib.systems.flakeExposed;
+    forAllSystems = func: (lib.genAttrs systemNames func);
 
     directoriesAsList = attrSet: builtins.filter (name: attrSet.${name} == "directory") (builtins.attrNames attrSet);
     readDirsToList = path: directoriesAsList (builtins.readDir path);
 
     #hostNames = builtins.trace (readDirsToList ./hosts) (readDirsToList ./hosts);
     hostnames = ["macbook"];
-    forAllHosts = func: (nixpkgs.lib.genAttrs hostnames func);
-
-    mods = import ./modules {} // {home = import ./home {};};
+    forAllHosts = func: (lib.genAttrs hostnames func);
   in ({
       formatter =
-        forAllSystems (system: nixpkgs.legacyPackages.${system}.alejandra);
+        forAllSystems (system: inputs.nixpkgs.legacyPackages.${system}.alejandra);
     }
     // (let
       host = rec {
         name = "macbook";
-        systemName = "x86_64-darwin";
-        defaultUsername = "dillon";
+        system = "x86_64-darwin";
+        username = "dillon";
       };
-      extraSpecialArgs = {inherit inputs host mods;};
+      
     in {
-      homeConfigurations.${host.defaultUsername} = home-manager.lib.homeManagerConfiguration {
-        inherit extraSpecialArgs;
-        pkgs = nixpkgs.legacyPackages.${host.systemName};
-        modules = [];
+      homeConfigurations.${host.defaultUsername} = inputs.home-manager.lib.homeManagerConfiguration {
+        extraSpecialArgs = {inherit inputs host;};
+        pkgs = inputs.nixpkgs.legacyPackages.${host.system};
+        modules = [./hosts/${host.name}/home.nix];
       };
 
-      darwinConfigurations.${host.name} = nix-darwin.lib.darwinSystem {
+      darwinConfigurations.${host.name} = inputs.nix-darwin.lib.darwinSystem {
         modules = [
           ./hosts/${host.name}/configuration.nix
           inputs.home-manager.darwinModules.home-manager
           {
             home-manager = {
-              inherit extraSpecialArgs;
+              extraSpecialArgs = {inherit inputs host;};
               useGlobalPkgs = true;
               useUserPackages = true;
               users.${host.defaultUsername} = import ./hosts/${host.name}/home.nix;
             };
           }
         ];
-        specialArgs = {inherit self inputs mods overlays host;};
+        specialArgs = {inherit self inputs overlays host;};
       };
     })
     // (let
       host = {
         name = "goblin-wsl";
-        defaultUsername = "db";
+        username = "db";
         flakeRepoPath = "/home/db/nixconf";
       };
     in {
-      nixosConfigurations.${host.name} = lib.nixosSystem {
+      nixosConfigurations.${host.name} = inputs.nixpkgs.lib.nixosSystem {
         modules = [
           ./hosts/${host.name}/configuration.nix
           inputs.NixOS-WSL.nixosModules.wsl
         ];
-        specialArgs = {inherit inputs mods overlays host;};
+        specialArgs = {inherit inputs overlays host;};
       };
     }));
 }
