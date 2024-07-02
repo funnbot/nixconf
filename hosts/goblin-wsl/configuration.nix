@@ -3,20 +3,19 @@
 # https://search.nixos.org/options and in the NixOS manual (`nixos-help`).
 # NixOS-WSL specific options are documented on the NixOS-WSL repository:
 # https://github.com/nix-community/NixOS-WSL
-{inputs, ...}: {
+{
+  inputs,
+  host,
+  ...
+}: {
   imports = [
     ./hardware-configuration.nix
     inputs.NixOS-WSL.nixosModules.wsl
   ];
 
-  host = {
-    username = "db";
-    flakeRepoPath = "~/nixconf";
-  };
-
   wsl.enable = true;
-  wsl.defaultUser = usercfg.username;
-  wsl.wslConf.network.hostname = hostcfg.hostname;
+  wsl.defaultUser = host.defaultUsername;
+  wsl.wslConf.network.hostname = host.name;
   wsl.wslConf.automount.enabled = true;
   wsl.wslConf.interop.enabled = false;
   wsl.wslConf.interop.appendWindowsPath = false;

@@ -6,10 +6,8 @@
   "nix.enableLanguageServer": true,
   "nix.serverPath": "nixd",
   "nix.formatterPath": [
-    "nix",
-    "fmt",
-    "--",
-    "-"
+    "alejandra",
+    "--"
   ],
   "nix.serverSettings": {
     "nil": {
@@ -25,18 +23,22 @@
     "nixd": {
       "formatting": {
         "command": [
-          "nix",
-          "fmt",
-          "--",
-          "-"
+          "alejandra",
+          "--"
         ]
       },
-      // "nixpkgs": {
-      //   "expr": "import (builtins.getFlake \"/home/db/nixconf\").inputs.nixpkgs { }    "
-      // },
+      "nixpkgs": {
+        "expr": "import (builtins.getFlake \"/Volumes/CrossData/nixconf\").inputs.nixpkgs { }    "
+      },
       "options": {
         "nixos": {
+          "expr": "{}"
+        },
+        "nix-darwin": {
           "expr": "(builtins.getFlake \"/Volumes/CrossData/nixconf\").darwinConfigurations.macbook.options"
+        },
+        "home-manager": {
+          "expr": "(builtins.getFlake \"/Volumes/CrossData/nixconf\").homeConfigurations.dillon.options"
         }
       }
     }

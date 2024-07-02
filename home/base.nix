@@ -2,22 +2,12 @@
 # Use this to configure your home environment (it replaces ~/.config/nixpkgs/home.nix)
 {
   inputs,
-  overlays,
   lib,
   config,
-  usercfg,
-  hostcfg,
   pkgs,
+  host,
   ...
 }: {
-  imports =
-    [
-      inputs.vscode-server.nixosModules.home
-    ]
-    ++ hostcfg.home-modules;
-
-  services.vscode-server.enable = true;
-
   home = {
     username = usercfg.username;
     homeDirectory = "/home/${usercfg.username}";

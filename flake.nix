@@ -13,7 +13,8 @@
   # This is the standard format for flake.nix. `inputs` are the dependencies of the flake,
   # Each item in `inputs` will be passed as a parameter to the `outputs` function after being pulled and built.
   inputs = {
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-23.11";
+    # nixpkgs.url = "github:nixos/nixpkgs/nixos-23.11";
+    nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
     # You can access packages and modules from different nixpkgs revs
     # at the same time. Here's an working example:
     nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
@@ -22,7 +23,7 @@
 
     nix-darwin = {
       url = "github:LnL7/nix-darwin";
-      inputs.nixpkgs.follows = "nixpkgs-unstable";
+      inputs.nixpkgs.follows = "nixpkgs";
     };
 
     NixOS-WSL = {
@@ -31,7 +32,7 @@
     };
 
     home-manager = {
-      url = "github:nix-community/home-manager/release-23.11";
+      url = "github:nix-community/home-manager";
       # The `follows` keyword in inputs is used for inheritance.
       # Here, `inputs.nixpkgs` of home-manager is kept consistent with the `inputs.nixpkgs` of the current flake,
       # to avoid problems caused by different versions of nixpkgs dependencies.
@@ -84,54 +85,57 @@
     readDirsToList = path: directoriesAsList (builtins.readDir path);
 
     #hostNames = builtins.trace (readDirsToList ./hosts) (readDirsToList ./hosts);
-    hostNames = ["macbook"];
-    forAllHosts = func: (nixpkgs.lib.genAttrs hostNames func);
-    # home = ./home;
-    # mods = import ./modules {} // ;
-    # hostBuilders = forAllHosts (hostname:
-    #   lib.evalModules {
-    #     modules = [
-    #       mods.host
-    #       ./hosts/${hostname}
-    #     ];
-    # });
-    # configurations = forAllHosts (hostname: (
-    #   let host = hostBuilders.${hostname}; in {
-    #     ${host.configOutputName} = host.builder {
-    #       modules = [
-    #         ${mods}/
-    #       ]
-    #     }
-    #   }
-    # ));
-  in {
-    formatter =
-      forAllSystems (system: nixpkgs.legacyPackages.${system}.alejandra);
+    hostnames = ["macbook"];
+    forAllHosts = func: (nixpkgs.lib.genAttrs hostnames func);
 
-    darwinConfigurations.macbook = nix-darwin.lib.darwinSystem {
-      modules = [
-        ./modules/host.nix
-        ./hosts/macbook
-      ];
-      specialArgs = {inherit self inputs overlays;};
-    };
+    mods = import ./modules {} // {home = import ./home {};};
+  in ({
+      formatter =
+        forAllSystems (system: nixpkgs.legacyPackages.${system}.alejandra);
+    }
+    // (let
+      host = rec {
+        name = "macbook";
+        systemName = "x86_64-darwin";
+        defaultUsername = "dillon";
+      };
+      extraSpecialArgs = {inherit inputs host mods;};
+    in {
+      homeConfigurations.${host.defaultUsername} = home-manager.lib.homeManagerConfiguration {
+        inherit extraSpecialArgs;
+        pkgs = nixpkgs.legacyPackages.${host.systemName};
+        modules = [];
+      };
 
-    # imports = builtins.map (hostname: ./hosts/${hostname}/default.nix) hostNames;
-
-    # NixOS configuration entrypoint
-    # Available through 'nixos-rebuild --flake .#your-hostname'
-    # nixosConfigurations = forAllHosts (hostname:
-    #   let
-    #     host = import ./hosts/${hostname}/default.nix {inherit hostname inputs;};
-    #   in
-    #   nixpkgs.lib.nixosSystem {
-    #     specialArgs = {
-    #       inherit inputs overlays hostname;
-    #     };
-
-    #     modules = [
-    #       ./hosts/${hostname}
-    #     ];
-    #   });
-  };
+      darwinConfigurations.${host.name} = nix-darwin.lib.darwinSystem {
+        modules = [
+          ./hosts/${host.name}/configuration.nix
+          inputs.home-manager.darwinModules.home-manager
+          {
+            home-manager = {
+              inherit extraSpecialArgs;
+              useGlobalPkgs = true;
+              useUserPackages = true;
+              users.${host.defaultUsername} = import ./hosts/${host.name}/home.nix;
+            };
+          }
+        ];
+        specialArgs = {inherit self inputs mods overlays host;};
+      };
+    })
+    // (let
+      host = {
+        name = "goblin-wsl";
+        defaultUsername = "db";
+        flakeRepoPath = "/home/db/nixconf";
+      };
+    in {
+      nixosConfigurations.${host.name} = lib.nixosSystem {
+        modules = [
+          ./hosts/${host.name}/configuration.nix
+          inputs.NixOS-WSL.nixosModules.wsl
+        ];
+        specialArgs = {inherit inputs mods overlays host;};
+      };
+    }));
 }
