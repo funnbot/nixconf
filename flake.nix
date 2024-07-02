@@ -76,12 +76,12 @@
     directoriesAsList = attrSet: builtins.filter (name: attrSet.${name} == "directory") (builtins.attrNames attrSet);
     readDirsToList = path: directoriesAsList (builtins.readDir path);
 
-    #hostNames = builtins.trace (readDirsToList ./hosts) (readDirsToList ./hosts);
-    hostnames = ["macbook"];
-    forAllHosts = func: (lib.genAttrs hostnames func);
+    
   in ({
       formatter =
         forAllSystems (system: inputs.nixpkgs.legacyPackages.${system}.alejandra);
+
+      
     }
     // (let
       host = rec {
@@ -91,7 +91,7 @@
       };
       
     in {
-      homeConfigurations.${host.defaultUsername} = inputs.home-manager.lib.homeManagerConfiguration {
+      homeConfigurations.${host.username} = inputs.home-manager.lib.homeManagerConfiguration {
         extraSpecialArgs = {inherit inputs host;};
         pkgs = inputs.nixpkgs.legacyPackages.${host.system};
         modules = [./hosts/${host.name}/home.nix];
@@ -99,14 +99,14 @@
 
       darwinConfigurations.${host.name} = inputs.nix-darwin.lib.darwinSystem {
         modules = [
-          ./hosts/${host.name}/configuration.nix
+          ./hosts/${host.name}/darwin.nix
           inputs.home-manager.darwinModules.home-manager
           {
             home-manager = {
               extraSpecialArgs = {inherit inputs host;};
               useGlobalPkgs = true;
               useUserPackages = true;
-              users.${host.defaultUsername} = import ./hosts/${host.name}/home.nix;
+              users.${host.username} = import ./hosts/${host.name}/home.nix;
             };
           }
         ];
@@ -114,16 +114,24 @@
       };
     })
     // (let
-      host = {
+      host = rec {
         name = "goblin-wsl";
         username = "db";
-        flakeRepoPath = "/home/db/nixconf";
+        flakeRepoPath = "/home/${username}/nixconf";
       };
     in {
       nixosConfigurations.${host.name} = inputs.nixpkgs.lib.nixosSystem {
         modules = [
-          ./hosts/${host.name}/configuration.nix
-          inputs.NixOS-WSL.nixosModules.wsl
+          ./hosts/${host.name}/nixos.nix
+          inputs.home-manager.nixosModules.home-manager
+          {
+            home-manager = {
+              extraSpecialArgs = {inherit inputs host;};
+              useGlobalPkgs = true;
+              useUserPackages = true;
+              users.${host.username} = import ./hosts/${host.name}/home.nix;
+            };
+          }
         ];
         specialArgs = {inherit inputs overlays host;};
       };

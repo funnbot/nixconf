@@ -9,12 +9,12 @@
   ...
 }: {
   imports = [
-    ./hardware-configuration.nix
+    ./hardware.nix
     inputs.NixOS-WSL.nixosModules.wsl
   ];
-
+  
   wsl.enable = true;
-  wsl.defaultUser = host.defaultUsername;
+  wsl.defaultUser = host.username;
   wsl.wslConf.network.hostname = host.name;
   wsl.wslConf.automount.enabled = true;
   wsl.wslConf.interop.enabled = false;

@@ -5,7 +5,7 @@
   lib,
   config,
   pkgs,
-  hostname,
+  host,
   ...
 } @ args: let
 in {
@@ -75,11 +75,10 @@ in {
   };
 
   # TODO: Set your hostname
-  networking.hostName = hostname;
+  networking.hostName = host.name;
 
   # TODO: Configure your system-wide user settings (groups, etc), add more users as needed.
-  users.users = {
-    CHANGEME = {
+  users.users.${host.username} = {
       # TODO: You can set an initial password for your user.
       # If you do, you can skip setting a root password by passing '--no-root-passwd' to nixos-install.
       # Be sure to change it (using passwd) after rebooting!
@@ -94,6 +93,5 @@ in {
       extraGroups = ["wheel"];
 
       shell = pkgs.bashInteractive;
-    };
   };
 }

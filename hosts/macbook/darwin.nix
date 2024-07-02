@@ -20,7 +20,7 @@
     pkgs.nixd
     pkgs.alejandra
   ];
-
+  
   # Auto upgrade nix package and the daemon service.
   services.nix-daemon.enable = true;
   # nix.package = pkgs.nix;
@@ -31,7 +31,7 @@
     settings = {
       # Enable flakes and new 'nix' command
       experimental-features = "nix-command flakes";
-      trusted-users = [host.defaultUsername];
+      trusted-users = [host.username];
       # Opinionated: disable global registry
       flake-registry = "";
       # Workaround for https://github.com/NixOS/nix/issues/9574
